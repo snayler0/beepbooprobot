@@ -1,0 +1,2 @@
+git+https://github.com/Rapptz/discord.py@rewrite
+syllables==0.1.0
