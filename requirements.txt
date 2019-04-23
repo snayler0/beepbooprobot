@@ -1,2 +1,6 @@
 git+https://github.com/Rapptz/discord.py@rewrite
 syllables==0.1.0
+pyyaml==5.1
+googletrans==2.4.0
+PyDictionary==1.5.2
+pyown==2.10.0
