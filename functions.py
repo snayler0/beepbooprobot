@@ -5,6 +5,8 @@ import pyowm
 import json
 import inflect
 import string
+import random
+import ast
 
 class Functions:
     
@@ -14,13 +16,14 @@ class Functions:
         self.owm = None
         self.p = inflect.engine()
         self.debug = False
+        self.binary_ops = (ast.Add, ast.Sub, ast.Mult, ast.Div, ast.Mod)
 
     def set_OWM(self, owm_token):
         self.owm = pyowm.OWM(owm_token) 
 
     def define(self, word):
-        definition = self.dictionary.meaning(word)
-        if definition:
+        try:
+            definition = self.dictionary.meaning(word)
             response = ''
             counter = 1
             for wordtype in definition:
@@ -28,7 +31,7 @@ class Functions:
                     response += '{0}. ({1}): {2}\n'.format(counter, wordtype, answer)
                     counter += 1
             return response
-        else:
+        except:
             return 'In my defence... this api is really broken... Either that or {0} isn\'t a valid word'.format(word)
 
     def get_weather(self, location):
@@ -62,7 +65,7 @@ class Functions:
             snow_info = 'No data recently recorded.'
 
         return """
-The weather at {0} is {1}.
+The weather in {0} is {1}.
 CURRENT :thermometer:: {2}°C ({5}°F)
 MIN :thermometer: {3}°C ({6}°F)
 MAX :thermometer: {4}°C ({7}°F)
@@ -71,7 +74,6 @@ clouds :cloud:: {9}%
 rain :cloud_rain:: {10}
 snow :snowflake:: {11}
 wind :dash:: {12} meters/second
-Note: for snow and rain, 0mm can indicate no reading, it doesn't necessarily indicate no snow or rain.
 """.format(location, status, celsius['temp'], celsius['temp_min'], celsius['temp_max'], fahrenheit['temp'], fahrenheit['temp_min'], fahrenheit['temp_max'],
 humidity, clouds, rain_info, snow_info, wind['speed'])
     # except:
@@ -105,6 +107,96 @@ Translation: {3}
 !translate from LANGUAGE WORD   - Tries to translate WORD from the specified LANGUAGE into english.
 !translate to LANGUAGE WORD     - Tries to translate WORD to the specified LANGUAGE
 """
+
+    def roll(self, incoming):
+        options = incoming.split('d')
+        if len(options) == 2:
+            numdice = options[0]
+            diceface=options[1]
+            if '+' in options[1]:
+                diceface = options[1].split('+')[0]
+                modifier = '+{0}'.format(options[1].split('+')[1])
+            elif '-' in options[1]:
+                diceface = options[1].split('-')[0]
+                modifier = '-{0}'.format(options[1].split('-')[1])
+            elif '/' in options[1]:
+                diceface = options[1].split('/')[0]
+                modifier = '/{0}'.format(options[1].split('/')[1])
+            elif '*' in options[1]:
+                diceface = options[1].split('*')[0]
+                modifier = '*{0}'.format(options[1].split('*')[1])
+            else:
+                modifier = '+0'
+            possible_total=int(numdice) * int(diceface)
+            roll = '{0}{1}'.format(random.randint(1, possible_total), modifier)
+            result = eval(roll)
+            return result
+        else:
+            return 'I can\'t roll {0}!'.format(incoming)
+
+    def do8ball(self):
+        options = ["It is certain.",
+                   "It is decidedly so.",
+                   "Without a doubt.",
+                   "Yes - definitely.",
+                   "You may rely on it.",
+                   "As I see it, yes.",
+                   "Most likely.",
+                   "Outlook good.",
+                   "Yes.",
+                   "Signs point to yes.",
+                   "Reply hazy, try again.",
+                   "Ask again later.",
+                   "Better not tell you now.",
+                   "Cannot predict now.",
+                   "Concentrate and ask again.",
+                   "Don't count on it.",
+                   "My reply is no.",
+                   "My sources say no.",
+                   "Outlook not so good.",
+                   "Very doubtful."]
+
+        return random.choice(options)
+
+    def ozball(self):
+        options = ["Bloody Oath!",
+                   "Deadset, mate.",
+                   "Without a doubt.",
+                   "Nah, yeah.",
+                   "Strewth!",
+                   "No worries, mate, she'll be right.",
+                   "Better than a kick up the backside.",
+                   "Piece of Piss",
+                   "Right as rain",
+                   "She'll be apples",
+                   "Six of one, half a dozen of the other",
+                   "Buggered if i know",
+                   "I'm on the blink.",
+                   "It's a fish outta water.",
+                   "Give it another bash ya drongo.",
+                   "Yeah, nah",
+                   "Tell him he's dreamin'.",
+                   "Buckley's.",
+                   "You're off ya rocker!",
+                   "You've gotta be joking."]
+
+        return random.choice(options)
+
+    def check_haikuness(self, incoming):
+        exclude = set(string.punctuation)
+        incoming = ''.join(ch for ch in incoming if ch not in exclude)
+        words = str(incoming).split()
+        with open('haiku_overrides.json', 'r') as f:
+            overrides = json.load(f)
+        
+        response = ''
+        for word in words:
+            if word in overrides:
+                response += '{0}({1}) '.format(word, overrides[word])
+            else:
+                response += '{0}({1}) '.format(word, syllables.estimate(word))
+
+        return response
 
     def is_a_haiku(self, incoming):
         if self.debug:

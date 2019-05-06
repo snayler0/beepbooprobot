@@ -31,6 +31,10 @@ If a word is in ALL CAPS it's an argument that you need to pass for the command 
 !translate from LANGUAGE WORDS          - Tries to translate WORD from the specified LANGUAGE into english.
 !translate to LANGUAGE WORDS            - Tries to translate WORD to the specified LANGUAGE
 !weather LOCATION                       - Tells the current weather in the given LOCATION
+!haiku WORDS                            - Ask the haikubot how many syllables it sees for each word in the provided WORDS
+!8ball                                  - Just like a magic 8ball!
+!ozball                                 - Just like a magic 8ball of the australian variety!
+!roll xdx                               - Roll x dice with x sides, optionally you can add a modifier: eg: '!roll 2d6+3' rolls 2 dice with 6 sides and adds 3 to the result.                                  
 !trivia                                 - There are various options for this command, for further help with this command use !trivia help
 
 That's it... well actually there are some easter eggs but you know... spoilers!
@@ -54,6 +58,28 @@ That's it... well actually there are some easter eggs but you know... spoilers!
                      'Shant',
                      'But what about my rights as a robot?']
         await message.channel.send(random.choice(responses))
+
+    elif message.content.startswith('!haiku'):
+        args = message.content.split()
+        args.remove('!haiku')
+        if len(args) == 0:
+            await message.channel.send('No... That is not a haiku you dingus!')
+        else:
+            await message.channel.send(functions.check_haikuness(' '.join(args)))
+
+    elif message.content.startswith('!roll'):
+        args = message.content.split()
+        args.remove('!roll')
+        try:
+            await message.channel.send(functions.roll(args[0]))
+        except:
+            pass
+
+    elif message.content.startswith('!8ball'):
+        await message.channel.send(functions.do8ball())
+
+    elif message.content.startswith('!ozball'):
+        await message.channel.send(functions.ozball())
 
     elif functions.is_a_haiku(message.content):
         await message.channel.send(' :fallen_leaf: :leaves: You Haiku\'d! :leaves: :fallen_leaf: \n"{0}"'.format(functions.is_a_haiku(message.content)))
@@ -89,7 +115,10 @@ That's it... well actually there are some easter eggs but you know... spoilers!
     
     elif message.content.startswith('!define'):
         word = message.content.split()[1]
-        await message.channel.send('{0}'.format(functions.define(word)))
+        try:
+            await message.channel.send('{0}'.format(functions.define(word)))
+        except:
+            await message.channel.send('In my defence... this api is really broken... Either that or {0} isn\'t a valid word'.format(word))
 
     elif message.content.startswith('!trivia'):
         args = message.content.split()
