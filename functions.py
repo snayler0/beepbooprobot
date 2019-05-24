@@ -76,8 +76,10 @@ snow :snowflake:: {11}
 wind :dash:: {12} meters/second
 """.format(location, status, celsius['temp'], celsius['temp_min'], celsius['temp_max'], fahrenheit['temp'], fahrenheit['temp_min'], fahrenheit['temp_max'],
 humidity, clouds, rain_info, snow_info, wind['speed'])
-    # except:
-    #     return 'Failed to get weather for {0}'.format(location)
+
+    def get_fortune(self):
+        fortunes = [line.rstrip('\n') for line in open('fortunes', 'r')]
+        return random.choice(fortunes)
 
     def format_translation(self, translation):
         response = """

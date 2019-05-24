@@ -34,6 +34,7 @@ If a word is in ALL CAPS it's an argument that you need to pass for the command 
 !haiku WORDS                            - Ask the haikubot how many syllables it sees for each word in the provided WORDS
 !8ball                                  - Just like a magic 8ball!
 !ozball                                 - Just like a magic 8ball of the australian variety!
+!fortune                                - Gets your fortune just like a fortune cookie!
 !roll xdx                               - Roll x dice with x sides, optionally you can add a modifier: eg: '!roll 2d6+3' rolls 2 dice with 6 sides and adds 3 to the result.                                  
 !trivia                                 - There are various options for this command, for further help with this command use !trivia help
 
@@ -66,6 +67,9 @@ That's it... well actually there are some easter eggs but you know... spoilers!
             await message.channel.send('No... That is not a haiku you dingus!')
         else:
             await message.channel.send(functions.check_haikuness(' '.join(args)))
+
+    elif message.content.startswith('!fortune'):
+        await message.channel.send(functions.get_fortune())
 
     elif message.content.startswith('!roll'):
         args = message.content.split()
