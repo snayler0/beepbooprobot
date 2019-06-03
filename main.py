@@ -35,7 +35,8 @@ If a word is in ALL CAPS it's an argument that you need to pass for the command 
 !8ball                                  - Just like a magic 8ball!
 !ozball                                 - Just like a magic 8ball of the australian variety!
 !fortune                                - Gets your fortune just like a fortune cookie!
-!roll xdx                               - Roll x dice with x sides, optionally you can add a modifier: eg: '!roll 2d6+3' rolls 2 dice with 6 sides and adds 3 to the result.                                  
+!roll xdx                               - Roll x dice with x sides, optionally you can add a modifier: eg: '!roll 2d6+3' rolls 2 dice with 6 sides and adds 3 to the result.  
+!dadjoke                                - You know exactly what this does.                                
 !trivia                                 - There are various options for this command, for further help with this command use !trivia help
 
 That's it... well actually there are some easter eggs but you know... spoilers!
@@ -78,6 +79,9 @@ That's it... well actually there are some easter eggs but you know... spoilers!
             await message.channel.send(functions.roll(args[0]))
         except:
             pass
+
+    elif message.content.startswith('!dadjoke'):
+        await message.channel.send(functions.dadjoke())
 
     elif message.content.startswith('!8ball'):
         await message.channel.send(functions.do8ball())

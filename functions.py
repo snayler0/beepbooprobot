@@ -7,6 +7,7 @@ import inflect
 import string
 import random
 import ast
+import requests
 
 class Functions:
     
@@ -109,6 +110,13 @@ Translation: {3}
 !translate from LANGUAGE WORD   - Tries to translate WORD from the specified LANGUAGE into english.
 !translate to LANGUAGE WORD     - Tries to translate WORD to the specified LANGUAGE
 """
+
+    def dadjoke(self):
+        url = 'https://icanhazdadjoke.com/'
+        headers = {'Accept': 'text/plain', 'User-Agent': 'beepbooprobot (Discord bot at https://github.com/snayler0/beepbooprobot)'}
+        r = requests.get(url, headers=headers).content
+        
+        return r.decode("utf-8")
 
     def roll(self, incoming):
         options = incoming.split('d')
